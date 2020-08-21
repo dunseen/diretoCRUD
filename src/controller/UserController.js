@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
 
 module.exports = {
     async index(request, response) {
@@ -9,7 +9,7 @@ module.exports = {
     },
 
     async store(request, response) {
-        const { password, email } = request.body;
+        const { name, password, email } = request.body;
 
         const salt = bcrypt.genSaltSync(10);
         const hash = await bcrypt.hash(password, salt);
@@ -26,6 +26,7 @@ module.exports = {
 
         try {
             const user = await User.create({
+                name,
                 email,
                 password: hash,
             });
