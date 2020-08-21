@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const { uuid } = require('uuidv4')
+const { uuid } = require('uuidv4');
 
 module.exports = {
     async index(request, response) {
@@ -19,5 +19,16 @@ module.exports = {
         })
 
         return response.json(user)
+    },
+    async delete(request, response){
+        const { id } = request.params;
+        
+        await User.destroy({
+            where:{
+                id: id
+            }
+        });
+
+        return response.send().status(200);
     }
 }
