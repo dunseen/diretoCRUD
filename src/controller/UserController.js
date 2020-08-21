@@ -1,5 +1,6 @@
 const User = require('../models/User');
-const { uuid } = require('uuidv4');
+
+const bcrypt = require('bcryptjs')
 
 module.exports = {
     async index(request, response) {
@@ -8,27 +9,56 @@ module.exports = {
     },
 
     async store(request, response) {
-        const { name,email,phone,password } = request.body;
+        const { password, email } = request.body;
 
-        const user = await User.create({
-            name,
-            email,
-            phone,
-            password,
-            registration:uuid(),
-        })
+        const salt = bcrypt.genSaltSync(10);
+        const hash = await bcrypt.hash(password, salt);
 
-        return response.json(user)
-    },
-    async delete(request, response){
-        const { id } = request.params;
-        
-        await User.destroy({
-            where:{
-                id: id
+        const userVerify = await User.findOne({
+            where: {
+                email: email
             }
         });
 
-        return response.send().status(200);
+        if(userVerify){
+            return response.status(400).send('E-mail already exists !');
+        }
+
+        try {
+            const user = await User.create({
+                email,
+                password: hash,
+            });
+
+            return response.json(user);
+        } catch (error) {
+            throw new Error(error);
+        }
+
+        
+
+    },
+
+    async delete(request, response){
+        const { id } = request.params;
+        
+        const exists = await User.findByPk(id);
+
+        if(!exists) {
+            return response.status(404).send('User not found !');
+        }
+
+        try {
+            await User.destroy({
+                where:{
+                    id: id
+                }
+            });
+    
+            return response.send().status(200);
+            
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
