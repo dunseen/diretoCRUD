@@ -21,7 +21,7 @@ module.exports = {
         });
 
         if(userVerify){
-            return response.status(400).send('E-mail already exists !');
+            return response.status(400).json({error: 'E-mail already exists !'});
         }
 
         try {
@@ -45,7 +45,7 @@ module.exports = {
         const exists = await User.findByPk(id);
 
         if(!exists) {
-            return response.status(404).send('User not found !');
+            return response.status(404).json({error: 'User not found !'});
         }
 
         try {

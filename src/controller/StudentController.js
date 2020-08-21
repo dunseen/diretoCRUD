@@ -18,7 +18,7 @@ module.exports = {
         });
 
         if (exists) {
-            return response.status(400).send('Email already exists');
+            return response.status(400).json({error: 'Email already exists'});
         }
 
         try {
@@ -43,7 +43,7 @@ module.exports = {
         const exists = await Student.findByPk(id);
 
         if (!exists){
-            return response.status(404).send('Student not found.');
+            return response.status(404).json({error: 'Student not found.'});
         }
 
         try {
@@ -60,7 +60,7 @@ module.exports = {
             return response.json(student);
             
         } catch (error) {
-            return response.status(400).send('Fail on update user.')
+            return response.status(400).json({error:'Fail on update user.'})
         }
 
 
