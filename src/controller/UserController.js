@@ -10,7 +10,7 @@ module.exports = {
             email,
             phone,
             password,
-            registration: uuid(),
+            registration:uuid(),
         })
 
         return response.json(user)
